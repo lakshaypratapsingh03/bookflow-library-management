@@ -289,7 +289,9 @@ npm run dev
 ---
 
 # Future Improvements
-
+- QR Code Based Book Issue
+- Barcode Scanner
+- PDF Reports
 - Email Due Reminder
 - Book Reservation
 - Analytics Dashboard
