@@ -109,8 +109,10 @@ const Register = () => {
 
 
 
-          <p className="text-gray-700 text-center mb-7 cursor-pointer">
-            Please provide your information to sign up
+          <p className="text-gray-700 text-semibold text-center mb-7 cursor-pointer">
+            Please provide information to sign up 
+            <p className="text-gray-700 text-semibold text-center cursor-pointer">
+              only for users</p>
           </p>
           <form onSubmit={handleRegister}>
             <div className="mb-2">

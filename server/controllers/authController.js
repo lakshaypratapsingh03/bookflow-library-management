@@ -126,18 +126,26 @@ export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const login = catchAsyncErrors(async (req, res, next) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { email, password, role } = req.body;
+    if (!email || !password || !role) {
         return next(new ErrorHandler("Please enter all fields.", 400));
     }
     const user = await User.findOne({ email, accountVerified: true }).select("+password");
     if (!user) {
-        return next(new ErrorHandler("Invalid email or password.", 400));
+        return next(new ErrorHandler("Invalid Email or Password.", 400));
     }
     const isPasswordMatched = await bcrypt.compare(password, user.password);
     if (!isPasswordMatched) {
-        return next(new ErrorHandler("Invalid email or password.", 400));
+        return next(new ErrorHandler("Invalid Email or Password.", 400));
     }
+    const validRoles = ["User", "Librarian", "Admin"];
+    if (!validRoles.includes(role)) {
+        return next(new ErrorHandler("Invalid Role.", 400));
+    }
+    if (user.role !== role) {
+        return next(new ErrorHandler(`User does not have the role: ${role}.`, 403));
+    }
+    
 
     sendToken(user, 200, "Login successful", res);
 });

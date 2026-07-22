@@ -17,7 +17,11 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loginMode, setLoginMode] = useState(null); // null | email | face
+  const [loginMode, setLoginMode] = useState(null);
+  const [role, setRole] = useState("User");
+  const primaryColor = "#156662";
+  const borderColor = "#DDB287";
+  const bgColor = "#EAC9AA";
 
   const dispatch = useDispatch();
 
@@ -27,7 +31,7 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    dispatch(login({ email, password }));
+    dispatch(login({ email, password, role }));
   };
 
   const handleFaceOnlyCapture = async (descriptor) => {
@@ -61,10 +65,9 @@ const Login = () => {
   }
 
   const modeButtonClass = (active) =>
-    `flex-1 py-2 rounded-md font-semibold border-2 ${
-      active
-        ? "bg-[#156662] text-[#EAC9AA] border-[#DDB287]"
-        : "bg-gray-500 text-[#EAC9AA] border-[#DDB287]"
+    `flex-1 py-2 rounded-md font-semibold border-2 ${active
+      ? "bg-[#156662] text-[#EAC9AA] border-[#DDB287]"
+      : "bg-gray-500 text-[#EAC9AA] border-[#DDB287]"
     }`;
 
   return (
@@ -86,9 +89,9 @@ const Login = () => {
             </h1>
             <p className="text-gray-700 text-center mb-4">
               {loginMode === "face"
-                ? "Enter your email, then capture your face. No password needed."
+                ? "Enter your email, then capture your face."
                 : loginMode === "email"
-                  ? "Sign in with your email and password. No face login."
+                  ? "Sign in with your email and password."
                   : "Choose how you want to sign in."}
             </p>
 
@@ -120,15 +123,16 @@ const Login = () => {
                   className="w-full px-4 py-3 border border-[#DDB287] hover:border-[#125957] rounded-md focus:outline-none bg-[#FAF1EA] text-[#125957]"
                   autoComplete="username"
                 />
-                <p className="text-sm text-[#125957]">
-                  Face login must already be enabled in Settings for this
-                  account.
-                </p>
+
                 <FaceCapture
                   onCapture={handleFaceOnlyCapture}
                   captureLabel="Login with Face"
                   disabled={loading || !email.trim()}
                 />
+                <p className="font-semibold text-[#d67412]">
+                  Face login must already be enabled in Settings for this
+                  account.
+                </p>
               </div>
             )}
 
@@ -166,7 +170,7 @@ const Login = () => {
                 </div>
                 <Link
                   to={"/password/forgot"}
-                  className="font-semibold  text-[#D4A373] hover:underline hover:text-[#104D4B] transition"
+                  className="font-semibold  text-[#d67412] hover:underline hover:text-[#104D4B] transition"
                 >
                   Forgot Password?
                 </Link>
@@ -179,6 +183,32 @@ const Login = () => {
                 >
                   {loading ? "Signing in..." : "LOGIN"}
                 </button>
+
+                {/* Role */}
+                <div className="mb-4">
+                  <label className="block font-semibold text-[#d67412] mb-4 mt-4">Role</label>
+                  <div className="flex gap-2">
+                    {[
+                      { label: "User", value: "User" },
+                      { label: "Librarian", value: "Librarian" },
+                      { label: "Admin", value: "Admin" },
+                    ].map((r) => (
+                      <button
+                        key={r.value}
+                        type="button"
+                        className="flex-1 border rounded-lg px-3 py-2 text-center font-medium transition-colors bg-gray-500 cursor-pointer"
+                        onClick={() => setRole(r.value)}
+                        style={
+                          role === r.value
+                            ? { backgroundColor: primaryColor, color: bgColor }
+                            : { border: `1px solid ${borderColor}`, color: "#EAC9AA" }
+                        }
+                      >
+                        {r.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </form>
             )}
           </div>
