@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { returnBook } from "../store/slices/borrowSlice";
 import { toggleReturnBookPopup } from "../store/slices/popUpSlice";
@@ -6,9 +6,11 @@ import { toggleReturnBookPopup } from "../store/slices/popUpSlice";
 const ReturnBookPopup = ({bookId, email}) => {
     
   const dispatch = useDispatch()
+  const [paymentStatus, setPaymentStatus] = useState("Unpaid");
+
   const handleReturnBook = (e)=>{
     e.preventDefault();
-    dispatch(returnBook(email, bookId));
+    dispatch(returnBook(email, bookId, paymentStatus));
     dispatch(toggleReturnBookPopup());
   };
   
@@ -38,6 +40,20 @@ const ReturnBookPopup = ({bookId, email}) => {
                  required
                  disabled
                  />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-[#F5E6C8] font-medium mb-2">
+                Payment Status
+              </label>
+              <select
+                value={paymentStatus}
+                onChange={(e) => setPaymentStatus(e.target.value)}
+                className="w-full px-4 py-2 bg-[#F5E6C8] border-2 border-[#DDB287] text-[#bb6d1e] font-semibold outline-none rounded-md"
+              >
+                <option value="Unpaid">Unpaid</option>
+                <option value="Paid">Paid</option>
+              </select>
             </div>
             
             <div className="flex justify-end space-x-4">

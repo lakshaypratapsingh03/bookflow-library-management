@@ -77,6 +77,37 @@ const borrowSlice = createSlice({
             state.error = action.payload;
             state.message = null;
         },
+        updatePaymentStatusRequest(state) {
+            state.loading = true;
+            state.error = null;
+            state.message = null;
+        },
+        updatePaymentStatusSuccess(state, action) {
+            state.loading = false;
+            state.message = action.payload.message;
+            const updated = action.payload.borrow;
+            if (updated?._id) {
+                const updatedId = String(updated._id);
+                state.allBorrowedBooks = state.allBorrowedBooks.map((book) =>
+                    String(book._id) === updatedId ? { ...book, ...updated } : book
+                );
+                state.userBorrowedBooks = state.userBorrowedBooks.map((book) =>
+                    String(book.borrowId) === updatedId || String(book._id) === updatedId
+                        ? {
+                            ...book,
+                            paymentStatus: updated.paymentStatus,
+                            paidAt: updated.paidAt,
+                            receiptNumber: updated.receiptNumber ?? book.receiptNumber,
+                        }
+                        : book
+                );
+            }
+        },
+        updatePaymentStatusFailed(state, action) {
+            state.loading = false;
+            state.error = action.payload;
+            state.message = null;
+        },
         resetBorrowSlice(state) {
             state.loading = false;
             state.error = null;
@@ -152,25 +183,53 @@ export const recordBorrowBook = (email, id) => async (dispatch) => {
         });
 };
 
-export const returnBook = (email, id)=>async(dispatch)=>{
+export const returnBook = (email, id, paymentStatus = "Unpaid") => async (dispatch) => {
     dispatch(borrowSlice.actions.returnBookRequest());
     await axios.put(
         `http://localhost:4000/api/v1/borrow/return-borrowed-book/${id}`,
-        { email },
+        { email, paymentStatus },
         {
             withCredentials: true,
             headers: {
-                "content-Type" : "application/json",
+                "Content-Type": "application/json",
             },
         }
     ).then((res) => {
         dispatch(borrowSlice.actions.returnBookSuccess(res.data.message));
-        
-
     })
     .catch((err) => {
         dispatch(borrowSlice.actions.returnBookFailed(err.response.data.message));
     });
+};
+
+export const updatePaymentStatus = (borrowId, paymentStatus) => async (dispatch) => {
+    dispatch(borrowSlice.actions.updatePaymentStatusRequest());
+    await axios
+        .put(
+            `http://localhost:4000/api/v1/borrow/payment-status/${borrowId}`,
+            { paymentStatus },
+            {
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        )
+        .then((res) => {
+            dispatch(
+                borrowSlice.actions.updatePaymentStatusSuccess({
+                    message: res.data.message,
+                    borrow: res.data.borrow,
+                })
+            );
+        })
+        .catch((err) => {
+            dispatch(
+                borrowSlice.actions.updatePaymentStatusFailed(
+                    err.response?.data?.message || "Failed to update payment status."
+                )
+            );
+        });
 };
 
 export const resetBorrowSlice = ()=>(dispatch)=>{

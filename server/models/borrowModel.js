@@ -41,6 +41,20 @@ const borrowSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    receiptNumber: {
+        type: String,
+        unique: true,
+        sparse: true,
+    },
+    paymentStatus: {
+        type: String,
+        enum: ["Unpaid", "Paid"],
+        default: "Unpaid",
+    },
+    paidAt: {
+        type: Date,
+        default: null,
+    },
     notified: {
         type: Boolean,
         default: false,

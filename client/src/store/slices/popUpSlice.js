@@ -8,6 +8,7 @@ const popupSlice = createSlice({
         readBookPopup: false,
         recordBookPopup: false,
         returnBookPopup: false,
+        receiptPopup: false,
         addNewAdminPopup: false,
         addNewLibrarianPopup: false,
     },
@@ -34,6 +35,9 @@ const popupSlice = createSlice({
          toggleReturnBookPopup(state){
             state.returnBookPopup = !state.returnBookPopup;
         },
+         toggleReceiptPopup(state){
+            state.receiptPopup = !state.receiptPopup;
+        },
         closeAllPopup(state){
             state.addBookPopup = false;
             state.addNewAdminPopup = false;
@@ -41,6 +45,7 @@ const popupSlice = createSlice({
             state.readBookPopup = false;
             state.recordBookPopup = false;
             state.returnBookPopup = false;
+            state.receiptPopup = false;
             state.settingPopup = false;
         },
     },
@@ -54,6 +59,7 @@ export const {
     toggleReadBookPopup,
     toggleRecordBookPopup,
     toggleReturnBookPopup,
+    toggleReceiptPopup,
     toggleSettingPopup,
 } = popupSlice.actions;
 

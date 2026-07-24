@@ -118,6 +118,20 @@ const SettingPopup = () => {
             />
           </header>
 
+          <div className="mb-5 sm:flex gap-4 items-center">
+            <label className="block text-[#125957] font-medium w-full">
+              Email
+            </label>
+            <div className="relative w-full">
+              <input
+                type="email"
+                value={user?.email || ""}
+                readOnly
+                className="w-full px-4 py-2 border border-gray-900 rounded-md focus:outline-none text-[#bb6d1e] bg-[#FAF1EA] text-xl cursor-default"
+              />
+            </div>
+          </div>
+
           <form onSubmit={handleUpdatePassword}>
             <div className="mb-5 sm:flex gap-4 items-center">
               <label className="block text-[#125957] font-medium w-full">

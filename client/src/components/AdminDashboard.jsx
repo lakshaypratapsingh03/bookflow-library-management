@@ -109,7 +109,7 @@ const AdminDashboard = ({ navigateTo }) => {
                   maintainAspectRatio: false,
 
                 }}
-                className="max-auto lg:mx-0 w-full h-auto"
+                className="max-auto lg:mx-0 w-[200px] h-[200px]"
               />
 
             </div>
